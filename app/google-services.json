@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "534309390583",
+    "project_id": "sevillanasmaneras-dbe8d",
+    "storage_bucket": "sevillanasmaneras-dbe8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534309390583:android:fb06cd6a00facdbcae2bf2",
+        "android_client_info": {
+          "package_name": "com.example.sevillanasmaneras"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSL7bvY3kpq3qeBEKEePO85bcwBch4XRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
