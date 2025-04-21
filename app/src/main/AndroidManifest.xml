@@ -30,6 +30,12 @@
             android:screenOrientation="portrait"
             android:exported="false" />
 
+        <activity
+            android:name=".PrincipalActivity"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

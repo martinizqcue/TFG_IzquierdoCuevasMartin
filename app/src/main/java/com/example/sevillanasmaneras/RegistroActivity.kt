@@ -20,6 +20,7 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var passwordEditText: EditText
     private lateinit var registerButton: Button
     private lateinit var btnSalir: Button
+    private lateinit var btnSiguiente: Button // Nuevo botón para la navegación
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +36,7 @@ class RegistroActivity : AppCompatActivity() {
         passwordEditText = findViewById(R.id.passwordEditText)
         registerButton = findViewById(R.id.registerButton)
         btnSalir = findViewById(R.id.btnSalir)
+        btnSiguiente = findViewById(R.id.btnSiguiente) // Referencia al nuevo botón
 
         // Configuración del botón de registro
         registerButton.setOnClickListener {
@@ -63,7 +65,7 @@ class RegistroActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     // Redirigir al usuario a la actividad principal
                                     Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                                    // startActivity(Intent(this, MainActivity::class.java))
+                                    startActivity(Intent(this, PrincipalActivity::class.java))
                                     finish() // Cerrar la actividad actual
                                 }
                                 .addOnFailureListener { e ->
@@ -83,7 +85,11 @@ class RegistroActivity : AppCompatActivity() {
         btnSalir.setOnClickListener {
             finish() // Cerrar la actividad
         }
+
+        // Configurar el botón de siguiente
+        btnSiguiente.setOnClickListener {
+            // Iniciar la actividad de SesionActivity
+            startActivity(Intent(this, SesionActivity::class.java))
+        }
     }
 }
-
-

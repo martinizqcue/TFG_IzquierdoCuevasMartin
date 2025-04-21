@@ -38,7 +38,7 @@ class SesionActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Si la autenticación es exitosa, mostrar mensaje y navegar
                             Toast.makeText(this, "Sesión iniciada correctamente", Toast.LENGTH_SHORT).show()
-                            // startActivity(Intent(this, MainActivity::class.java)) // Aquí navegas a la actividad principal
+                            startActivity(Intent(this, PrincipalActivity::class.java)) // Aquí navegas a la actividad principal
                             finish() // Finaliza la actividad actual
                         } else {
                             // Si hay un error en la autenticación, mostrar mensaje
