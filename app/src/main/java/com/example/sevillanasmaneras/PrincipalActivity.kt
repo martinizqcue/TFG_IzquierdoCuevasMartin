@@ -1,7 +1,6 @@
 package com.example.sevillanasmaneras
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +13,7 @@ class PrincipalActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
-    // Por ahora sin imágenes
-    // Podrás activarlo después al descomentar e incluir imágenes en res/drawable
+    // Descomenta esto para agregar las imágenes en res/drawable
     /*private val imagenes = listOf(
         R.drawable.imagen_lugar1,
         R.drawable.imagen_lugar2,
@@ -57,19 +55,22 @@ class PrincipalActivity : AppCompatActivity() {
         val prevBtn = findViewById<Button>(R.id.prevButton)
         val nextBtn = findViewById<Button>(R.id.nextButton)
 
+        // Actualiza la imagen y los textos
         fun actualizarContenido() {
-            // Si tuvieras imágenes:
+            // Si tuvieras imágenes, descomenta esta línea
             // imageView.setImageResource(imagenes[indexImagen])
 
             nombreLugar.text = "Lugar ${indexImagen + 1}"
             descripcionLugar.text = "Descripción del lugar ${indexImagen + 1} con curiosidades interesantes."
         }
 
+        // Acción para el botón de "prev"
         prevBtn.setOnClickListener {
             indexImagen = if (indexImagen > 0) indexImagen - 1 else totalLugares - 1
             actualizarContenido()
         }
 
+        // Acción para el botón de "next"
         nextBtn.setOnClickListener {
             indexImagen = (indexImagen + 1) % totalLugares
             actualizarContenido()
@@ -77,10 +78,12 @@ class PrincipalActivity : AppCompatActivity() {
 
         actualizarContenido()
 
+        // Acción para el botón de maps
         findViewById<Button>(R.id.mapsButton).setOnClickListener {
             showToast("Ir a Google Maps")
         }
 
+        // Acción para el botón de favorito
         findViewById<Button>(R.id.favoritoButton).setOnClickListener {
             showToast("Añadido a favoritos")
         }
