@@ -14,6 +14,8 @@ class PrincipalActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
+    // Por ahora sin imágenes
+    // Podrás activarlo después al descomentar e incluir imágenes en res/drawable
     /*private val imagenes = listOf(
         R.drawable.imagen_lugar1,
         R.drawable.imagen_lugar2,
@@ -21,17 +23,18 @@ class PrincipalActivity : AppCompatActivity() {
     )*/
 
     private var indexImagen = 0
+    private val totalLugares = 3 // Número de lugares ficticios por ahora
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_principal)
 
-        // Drawer y Toolbar
         drawerLayout = findViewById(R.id.drawer_layout)
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        //toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+        // Configurar el botón del menú (hamburguesa)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
@@ -47,35 +50,33 @@ class PrincipalActivity : AppCompatActivity() {
             true
         }
 
-        // Imagen y descripción
         val imageView = findViewById<ImageView>(R.id.imageCarousel)
         val nombreLugar = findViewById<TextView>(R.id.nombreLugarText)
         val descripcionLugar = findViewById<TextView>(R.id.descripcionLugarText)
 
-        // Botones carrusel
         val prevBtn = findViewById<Button>(R.id.prevButton)
         val nextBtn = findViewById<Button>(R.id.nextButton)
 
-        fun actualizarImagen() {
-            //imageView.setImageResource(imagenes[indexImagen])
+        fun actualizarContenido() {
+            // Si tuvieras imágenes:
+            // imageView.setImageResource(imagenes[indexImagen])
+
             nombreLugar.text = "Lugar ${indexImagen + 1}"
-            descripcionLugar.text = "Descripción del lugar ${indexImagen + 1} con curiosidades."
+            descripcionLugar.text = "Descripción del lugar ${indexImagen + 1} con curiosidades interesantes."
         }
 
         prevBtn.setOnClickListener {
-            if (indexImagen > 0) indexImagen--
-            //else indexImagen = imagenes.size - 1
-            actualizarImagen()
+            indexImagen = if (indexImagen > 0) indexImagen - 1 else totalLugares - 1
+            actualizarContenido()
         }
 
         nextBtn.setOnClickListener {
-            //indexImagen = (indexImagen + 1) % imagenes.size
-            actualizarImagen()
+            indexImagen = (indexImagen + 1) % totalLugares
+            actualizarContenido()
         }
 
-        actualizarImagen()
+        actualizarContenido()
 
-        // Botones acción
         findViewById<Button>(R.id.mapsButton).setOnClickListener {
             showToast("Ir a Google Maps")
         }

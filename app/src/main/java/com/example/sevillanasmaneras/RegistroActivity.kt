@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.auth.SignInMethodQueryResult
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -46,34 +47,21 @@ class RegistroActivity : AppCompatActivity() {
 
             // Verificación de campos vacíos
             if (nombre.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                // Crear usuario en Firebase Authentication
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
+                // Verificar si el correo ya está registrado
+                auth.fetchSignInMethodsForEmail(email)
+                    .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Usuario registrado exitosamente
-                            val user = auth.currentUser
-                            val userInfo = hashMapOf(
-                                "nombre" to nombre,
-                                "email" to email,
-                                "uid" to user?.uid
-                            )
-
-                            // Guardar datos adicionales en Firestore
-                            db.collection("usuarios")
-                                .document(user?.uid ?: "")
-                                .set(userInfo)
-                                .addOnSuccessListener {
-                                    // Redirigir al usuario a la actividad principal
-                                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                                    startActivity(Intent(this, PrincipalActivity::class.java))
-                                    finish() // Cerrar la actividad actual
-                                }
-                                .addOnFailureListener { e ->
-                                    Toast.makeText(this, "Error al guardar los datos: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
+                            val signInMethods = task.result?.signInMethods
+                            if (!signInMethods.isNullOrEmpty()) {
+                                // El correo ya está registrado
+                                Toast.makeText(this, "El correo electrónico ya está en uso", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // El correo no está registrado, continuar con el registro
+                                registrarUsuario(email, password, nombre)
+                            }
                         } else {
-                            // Error en el registro
-                            Toast.makeText(this, "Error en el registro: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            // Error al verificar el correo
+                            Toast.makeText(this, "Error al verificar el correo: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
@@ -91,5 +79,38 @@ class RegistroActivity : AppCompatActivity() {
             // Iniciar la actividad de SesionActivity
             startActivity(Intent(this, SesionActivity::class.java))
         }
+    }
+
+    private fun registrarUsuario(email: String, password: String, nombre: String) {
+        // Crear usuario en Firebase Authentication
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Usuario registrado exitosamente
+                    val user = auth.currentUser
+                    val userInfo = hashMapOf(
+                        "nombre" to nombre,
+                        "email" to email,
+                        "uid" to user?.uid
+                    )
+
+                    // Guardar datos adicionales en Firestore
+                    db.collection("usuarios")
+                        .document(user?.uid ?: "")
+                        .set(userInfo)
+                        .addOnSuccessListener {
+                            // Redirigir al usuario a la actividad principal
+                            Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, PrincipalActivity::class.java))
+                            finish() // Cerrar la actividad actual
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error al guardar los datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    // Error en el registro
+                    Toast.makeText(this, "Error en el registro: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }
