@@ -1,11 +1,14 @@
 package com.example.sevillanasmaneras
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class PrincipalActivity : AppCompatActivity() {
 
@@ -31,22 +34,48 @@ class PrincipalActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        // MOSTRAR NOMBRE DEL USUARIO EN TOOLBAR Y ABRIR PERFIL
+        val userNameTextView = findViewById<TextView>(R.id.userNameTextView)
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user != null) {
+            val db = FirebaseFirestore.getInstance()
+            db.collection("usuarios").document(user.uid)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.contains("nombre")) {
+                        val nombre = document.getString("nombre") ?: "Usuario"
+                        userNameTextView.text = nombre
+                    }
+                }
+        }
+
+        userNameTextView.setOnClickListener {
+            startActivity(Intent(this, PerfilActivity::class.java))
+        }
+
         // Configurar el botón del menú (hamburguesa)
         toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
+        val toolbarTitle = findViewById<TextView>(R.id.toolbarTitle)
         val navigationView = findViewById<NavigationView>(R.id.navigation_view)
         navigationView.setNavigationItemSelectedListener {
+            val title = it.title?.toString() ?: ""
+            toolbarTitle.text = title
+
             when (it.itemId) {
                 R.id.nav_lugares -> showToast("Lugares")
                 R.id.nav_tradiciones -> showToast("Tradiciones")
                 R.id.nav_cultura -> showToast("Cultura")
                 R.id.nav_monumentos -> showToast("Monumentos")
             }
+
             drawerLayout.closeDrawers()
             true
         }
+
 
         val imageView = findViewById<ImageView>(R.id.imageCarousel)
         val nombreLugar = findViewById<TextView>(R.id.nombreLugarText)
