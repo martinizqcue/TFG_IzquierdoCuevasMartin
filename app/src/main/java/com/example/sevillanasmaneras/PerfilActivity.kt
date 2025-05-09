@@ -23,11 +23,9 @@ class PerfilActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_perfil)
 
-        // Inicializar Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Referencias UI
         txtNombre = findViewById(R.id.txtNombre)
         txtCorreo = findViewById(R.id.txtCorreo)
         txtFecha = findViewById(R.id.txtFecha)
@@ -35,46 +33,41 @@ class PerfilActivity : AppCompatActivity() {
         btnCerrarSesion = findViewById(R.id.btnCerrarSesion)
         btnAtras = findViewById(R.id.btnAtras)
 
-        // Obtener usuario actual
         val user = auth.currentUser
-
         if (user != null) {
             val uid = user.uid
             db.collection("usuarios").document(uid).get()
                 .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        val nombre = document.getString("nombre") ?: "Sin nombre"
-                        val correo = document.getString("email") ?: "Sin correo"
-                        val fecha = document.getString("fechaRegistro") ?: "Sin fecha"
+                    val nombre = document.getString("nombre") ?: "Sin nombre"
+                    val correo = document.getString("email") ?: "Sin correo"
+                    val fecha = document.getString("fechaRegistro") ?: "Sin fecha"
 
-                        txtNombre.text = "Nombre: $nombre"
-                        txtCorreo.text = "Correo: $correo"
-                        txtFecha.text = "Fecha Registro: $fecha"
-
-                        // Si tienes favoritos guardados como lista en Firestore:
-                        val favoritos = document.get("favoritos") as? List<*>
-                        if (favoritos != null && favoritos.isNotEmpty()) {
-                            txtListaFavoritos.text = favoritos.joinToString(separator = "\n") { "• $it" }
-                        } else {
-                            txtListaFavoritos.text = "No hay favoritos aún."
-                        }
-                    }
+                    txtNombre.text = "Nombre: $nombre"
+                    txtCorreo.text = "Correo: $correo"
+                    txtFecha.text = "Fecha Registro: $fecha"
                 }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Error al cargar perfil", Toast.LENGTH_SHORT).show()
+
+            // 🔸 Cargar favoritos desde subcolección
+            db.collection("usuarios").document(uid).collection("favoritos")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    if (!snapshot.isEmpty) {
+                        val lista = snapshot.documents.mapNotNull { it.getString("nombre") }
+                        txtListaFavoritos.text = lista.joinToString("\n") { "• $it" }
+                    } else {
+                        txtListaFavoritos.text = "No hay favoritos aún."
+                    }
                 }
         } else {
             Toast.makeText(this, "Usuario no autenticado", Toast.LENGTH_SHORT).show()
         }
 
-        // Botón cerrar sesión
         btnCerrarSesion.setOnClickListener {
             auth.signOut()
             startActivity(Intent(this, SesionActivity::class.java))
             finish()
         }
 
-        // Botón atrás
         btnAtras.setOnClickListener {
             startActivity(Intent(this, PrincipalActivity::class.java))
             finish()

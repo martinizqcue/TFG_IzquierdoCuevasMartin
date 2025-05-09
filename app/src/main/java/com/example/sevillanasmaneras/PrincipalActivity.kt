@@ -17,6 +17,8 @@ class PrincipalActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: androidx.appcompat.widget.Toolbar
 
+    private var nombreActual: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_principal)
@@ -92,6 +94,7 @@ class PrincipalActivity : AppCompatActivity() {
             cargarImagenEscalada(elemento.imagen, imageView)
             nombreLugar.text = elemento.nombre
             descripcionLugar.text = elemento.descripcion
+            nombreActual = elemento.nombre ?: ""
         }
 
         actualizar()
@@ -111,7 +114,41 @@ class PrincipalActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.favoritoButton).setOnClickListener {
-            showToast("Añadido a favoritos")
+            val user = FirebaseAuth.getInstance().currentUser
+            val db = FirebaseFirestore.getInstance()
+
+            if (user != null && nombreActual.isNotEmpty()) {
+                val favDocRef = db.collection("usuarios")
+                    .document(user.uid)
+                    .collection("favoritos")
+                    .document(nombreActual)
+
+                favDocRef.get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            // Ya es favorito → eliminar
+                            favDocRef.delete()
+                                .addOnSuccessListener {
+                                    showToast("Eliminado de favoritos")
+                                }
+                                .addOnFailureListener {
+                                    showToast("Error al eliminar favorito")
+                                }
+                        } else {
+                            // No es favorito → añadir
+                            val favorito = hashMapOf("nombre" to nombreActual)
+                            favDocRef.set(favorito)
+                                .addOnSuccessListener {
+                                    showToast("Añadido a favoritos")
+                                }
+                                .addOnFailureListener {
+                                    showToast("Error al guardar favorito")
+                                }
+                        }
+                    }
+            } else {
+                showToast("Usuario no autenticado")
+            }
         }
     }
 
