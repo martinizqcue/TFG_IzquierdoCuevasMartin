@@ -79,14 +79,6 @@
                 android:text="Correo: ..."
                 android:textColor="#000000"
                 android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/txtFecha"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fecha Registro: ..."
-                android:textColor="#000000"
-                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- Icono favoritos -->

@@ -111,7 +111,11 @@
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_marginTop="12dp"
-                android:textColor="#FFFFFF" />
+                android:textColor="#000000"
+                android:shadowColor="#FFD700"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"/>
 
             <!-- Descripción -->
             <TextView
@@ -120,7 +124,11 @@
                 android:layout_height="wrap_content"
                 android:text="Descripción y curiosidades..."
                 android:layout_marginTop="8dp"
-                android:textColor="#FFFFFF" />
+                android:textColor="#000000"
+                android:shadowColor="#FFD700"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3" />
 
             <!-- Botones -->
             <LinearLayout
