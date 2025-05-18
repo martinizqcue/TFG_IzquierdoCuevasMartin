@@ -140,7 +140,7 @@
 
                 <Button
                     android:id="@+id/mapsButton"
-                    android:text="Ver en Maps"
+                    android:text="Ver Recomendaciones"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#B8860B"
