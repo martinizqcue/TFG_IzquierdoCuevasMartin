@@ -88,7 +88,6 @@ El usuario puede iniciar sesión, explorar lugares según su tipo, visualizar in
 
 1. Avisa al desarrollador si vas a probar la funcionalidad de vídeos embebidos (para desactivar temporalmente la restricción de clave API).
 2. Asegúrate de usar un **dispositivo físico con Google Maps y YouTube instalados**.
-3. La base de datos Firebase usada está **en modo de desarrollo**, sin reglas de seguridad estrictas (solo para pruebas locales).
 
 ---
 
